@@ -1,0 +1,26 @@
+{
+  "name": "required-check-drift-sentinel",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Detect GitHub required-check drift before PRs hang on missing status contexts.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lint": "tsc --noEmit",
+    "build": "ncc build src/action.ts -o dist --target es2023 --license licenses.txt",
+    "check-dist": "node scripts/check-dist.mjs"
+  },
+  "dependencies": {
+    "@actions/core": "3.0.1",
+    "@actions/github": "9.1.1",
+    "yaml": "2.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "@vercel/ncc": "0.38.4",
+    "typescript": "5.9.2",
+    "vitest": "3.2.7"
+  }
+}

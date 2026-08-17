@@ -1,0 +1,44 @@
+name: Required Check Drift Sentinel
+description: Detect required GitHub status checks that no workflow, check run, or commit status appears to emit.
+author: Silver Rook Labs
+
+inputs:
+  token:
+    description: GitHub token used to read repository rulesets, check runs, and statuses.
+    required: false
+    default: ${{ github.token }}
+  fail-on-drift:
+    description: Fail the action when missing required checks are detected.
+    required: false
+    default: "true"
+  include-observed-checks:
+    description: Include recent check runs and commit statuses in emitted-context inference.
+    required: false
+    default: "true"
+  lookback-commits:
+    description: Number of recent commits to inspect for observed check runs/statuses.
+    required: false
+    default: "20"
+  ruleset-refs:
+    description: Optional newline-delimited refs to inspect with repository rulesets. Defaults to current ref.
+    required: false
+
+outputs:
+  required-count:
+    description: Number of required status/check contexts discovered.
+  emitted-count:
+    description: Number of inferred emitted contexts.
+  missing-count:
+    description: Number of required contexts with no inferred emitter.
+  coverage-status:
+    description: full, partial, or unavailable.
+  report-path:
+    description: Path to the Markdown drift report.
+
+runs:
+  using: node24
+  main: dist/index.js
+
+branding:
+  icon: alert-triangle
+  color: gray-dark
