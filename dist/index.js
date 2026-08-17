@@ -45600,7 +45600,12 @@ async function fetchRulesetRequiredContexts(octokit, owner, repo, refs) {
     });
     const contexts = [];
     for (const ruleset of rulesets) {
-        const rules = Array.isArray(ruleset.rules) ? ruleset.rules : [];
+        const detailedRuleset = await octokit.request('GET /repos/{owner}/{repo}/rulesets/{ruleset_id}', {
+            owner,
+            repo,
+            ruleset_id: ruleset.id,
+        });
+        const rules = Array.isArray(detailedRuleset.data.rules) ? detailedRuleset.data.rules : [];
         for (const rule of rules) {
             if (rule.type !== 'required_status_checks') {
                 continue;
@@ -45608,7 +45613,7 @@ async function fetchRulesetRequiredContexts(octokit, owner, repo, refs) {
             const parameters = rule.parameters;
             for (const check of parameters?.required_status_checks ?? []) {
                 if (check.context) {
-                    contexts.push({ context: check.context, source: `ruleset:${ruleset.name ?? ruleset.id}` });
+                    contexts.push({ context: check.context, source: `ruleset:${detailedRuleset.data.name ?? ruleset.id}` });
                 }
             }
         }
