@@ -1,8 +1,10 @@
 # Required Check Drift Sentinel
 
-Detect GitHub required-check drift before pull requests hang on missing status contexts.
+Detect required GitHub checks that your repository no longer appears to emit—before a pull request or merge queue waits on a status that never arrives.
 
-The Action compares required status/check contexts against names the repository appears to emit from workflow files, recent check runs, and commit statuses. It is intentionally Action-first: it works inside the repository with ordinary workflow permissions where possible, and reports partial coverage instead of pretending legacy branch-protection data is always visible.
+Renaming a workflow or job, changing path filters, or retiring a CI integration can leave repository rules pointing at an obsolete check name. Required Check Drift Sentinel compares required contexts against workflow files, recent check runs, and commit statuses, then writes a reviewable Markdown report.
+
+It runs as a GitHub Action with ordinary read permissions where possible. When GitHub does not expose every source of required-check configuration to the workflow token, the report says coverage is partial rather than claiming certainty.
 
 ## Basic Use
 
@@ -25,6 +27,36 @@ jobs:
       - uses: actions/checkout@v4
       - uses: SilverRookLabs/required-check-drift-sentinel@v1
 ```
+
+Run it manually after changing workflow names, job names, rulesets, branch protection, or CI providers. Keeping `pull_request` enabled can also catch later drift during normal development.
+
+## Expected Report
+
+The Action writes `required-check-drift-report.md` and adds the same result to the workflow summary. A drift result looks like this:
+
+```markdown
+# Required Check Drift Report
+
+Coverage: `partial`
+Required contexts: 3
+Inferred emitted contexts: 2
+Missing required contexts: 1
+
+## Warnings
+
+- Legacy branch-protection required checks may require elevated Administration read access or a future GitHub App; this Action reports ruleset/workflow/observed-check coverage only by default.
+
+## Missing Required Contexts
+
+- `CI / Integration` from repository ruleset
+
+## Matched Required Contexts
+
+- `CI / Test` from repository ruleset
+- `Lint` from repository ruleset
+```
+
+`partial` describes what the token could inspect; it is not itself a failure. By default the Action fails only when it finds an apparently missing required context.
 
 ## What v1 Checks
 
@@ -72,3 +104,7 @@ permissions:
 - Organization-wide dashboard.
 - Full legacy branch-protection auditing without elevated access.
 - Historical drift database.
+
+## Privacy and Telemetry
+
+The Action runs inside your GitHub Actions environment and does not send repository data to a Silver Rook Labs service. GitHub's own Actions logs and usage policies still apply.
