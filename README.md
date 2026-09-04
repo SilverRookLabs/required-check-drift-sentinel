@@ -1,5 +1,7 @@
 # Required Check Drift Sentinel
 
+> **Research preview** — a bounded Silver Rook Labs experiment for learning whether repository maintainers need a lightweight required-check drift detector. The Action is functional and tested, but adoption, long-term support, and broader product investment are not yet established.
+
 Detect required GitHub checks that your repository no longer appears to emit—before a pull request or merge queue waits on a status that never arrives.
 
 Renaming a workflow or job, changing path filters, or retiring a CI integration can leave repository rules pointing at an obsolete check name. Required Check Drift Sentinel compares required contexts against workflow files, recent check runs, and commit statuses, then writes a reviewable Markdown report.
@@ -108,3 +110,7 @@ permissions:
 ## Privacy and Telemetry
 
 The Action runs inside your GitHub Actions environment and does not send repository data to a Silver Rook Labs service. GitHub's own Actions logs and usage policies still apply.
+
+## Support and Review Window
+
+This preview is provided as-is under the repository license, without a response-time or maintenance commitment. Report reproducible defects through the repository issue tracker. Silver Rook Labs will review the experiment's disposition by September 17, 2026 and will continue, revise, freeze, or archive it based on observed usefulness and operating burden.
